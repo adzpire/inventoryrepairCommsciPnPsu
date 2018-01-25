@@ -312,7 +312,7 @@ $this->registerLinkTag([
                 ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><?php echo Html::icon('tasks').' เจ้าหน้าที่' ?></h3>
+                    <h3 class="panel-title"><?php echo Html::icon('tasks').' เจ้าหน้าที่พัสดุ' ?></h3>
                 </div>
                 <div class="table">
                     <?php
@@ -320,22 +320,51 @@ $this->registerLinkTag([
                         'encodeLabels' => false,
                         'items' => [
                             [
-                                'label' => Html::icon('saved').' รับทราบ [พัสดุ]',
+                                'label' => Html::icon('saved').' รับทราบ',
                                 'url' => ['staff/'],
                                 'count' => '\backend\modules\ir\models\IRInvtstaffSearch',
                             ],
                             [
-                                'label' => Html::icon('screenshot').' ช่างตรวจสอบ [ช่าง]',
-                                'url' => ['staff/techindex'],
-                                'count' => '\backend\modules\ir\models\IRStaffSearch',
-                            ],
-                            [
-                                'label' => Html::icon('bitcoin').' ซื้ออะไหล่/ส่งร้าน [พัสดุ]',
+                                'label' => Html::icon('bitcoin').' ซื้ออะไหล่/ส่งร้าน',
                                 'url' => ['staff/shopproc'],
                                 'count' => '\backend\modules\ir\models\IRSpareSearch',
                             ],
                             [
-                                'label' => Html::icon('record').' ความเห็นหลังร้านเช็ค [ช่าง]',
+                                'label' => Html::icon('time').' รอผู้มีอำนาจอนุมัติ',
+                                'url' => ['staff/waitexec'],
+                                'count' => '\backend\modules\ir\models\StaffWaitExecSearch',
+                            ],
+                            [
+                                'label' => Html::icon('comment').' หลังได้อะไหล่/ร้านซ่อมแล้ว',
+                                'url' => ['staff/execproc'],
+                                'count' => '\backend\modules\ir\models\IRAfterExecSearch',
+                            ],
+                            [
+                                'label' => Html::icon('download-alt').' แจ้งคืนแล้วยังไม่รับ',
+                                'url' => ['staff/sendproc'],
+                                'count' => '\backend\modules\ir\models\StaffSendBackSearch',
+                            ],
+                        ],
+                        'options' => ['class' => 'nav-stacked'], // set this to nav-tab to get tab-styled navigation
+                    ]); ?>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?php echo Html::icon('wrench').' เจ้าหน้าที่ช่าง' ?></h3>
+                </div>
+                <div class="table">
+                    <?php
+                    echo Monav::widget([
+                        'encodeLabels' => false,
+                        'items' => [
+                            [
+                                'label' => Html::icon('screenshot').' รับทราบ-ตรวจสอบ',
+                                'url' => ['staff/techindex'],
+                                'count' => '\backend\modules\ir\models\IRStaffSearch',
+                            ],
+                            [
+                                'label' => Html::icon('record').' ความเห็นหลังร้านเช็ค',
                                 'url' => ['staff/shoptechnic'],
                                 'count' => '\backend\modules\ir\models\IRSpareSearch',
                             ],
