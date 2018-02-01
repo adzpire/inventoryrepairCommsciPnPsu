@@ -77,6 +77,7 @@ class IRStaffSearch extends InvtRepair
         $this->load($params);
         $query->where(['<', 'status', 3]);
         $query->andWhere(['>', 'ir_id', 0]);
+//        $query->andWhere('ir_tchnID IS NULL OR ir_tchnID = '.Yii::$app->user->id);
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');

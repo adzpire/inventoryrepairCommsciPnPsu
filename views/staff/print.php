@@ -93,7 +93,7 @@ $uncheckbox = '<img width="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUg
                     //echo '<td><div align="left" ><span > &nbsp;'.$row->exminfo_type.'</span></div></td>';
                     echo 'รายการที่ ' . $count . ' ผลการตรวจ ';
                     echo '<u>'.$row->getStatusLabel().'</u> ความเห็นเพิ่มเต็ม ';
-                    echo (!empty($model->ird_tchncomment)) ? '<u>'.$row->ird_tchncomment.'</u>' : '<u>&nbsp;-&nbsp;</u>';
+                    echo '<u>'.$row->ird_tchncomment.'</u>';
                     echo '</p>';
                     $count++;
                 }

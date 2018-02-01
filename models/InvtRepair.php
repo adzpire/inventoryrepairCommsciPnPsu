@@ -158,7 +158,7 @@ $query->joinWith(['irSt', 'irTchn', 'invtRepairDetails', ]);*/
             'status' => 'สถานะ',
             'ir_stID' => 'ผู้แจ้ง',
             'ir_code' => 'หมายเลข',
-            'ir_tchnID' => 'ผู้ตรวจสอบ',
+            'ir_tchnID' => 'ช่างผู้ตรวจสอบ',
             'ir_date' => 'วันที่แจ้งซ่อม',
             'ir_tchndate' => 'วันที่รายงานผล',
             'ir_shopname' => 'ร้าน/บริษัท',

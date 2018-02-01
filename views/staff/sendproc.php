@@ -87,6 +87,16 @@ $this->registerCss('
             },
 
         ],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template'=>'{view}',
+            'headerOptions' => [
+                'width' => '50px',
+            ],
+            'contentOptions' => [
+                'class'=>'text-center',
+            ],
+        ],
     ],
     'pager' => [
         'firstPageLabel' => 'รายการแรกสุด',

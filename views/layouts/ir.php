@@ -325,7 +325,7 @@ $this->registerLinkTag([
                                 'count' => '\backend\modules\ir\models\IRInvtstaffSearch',
                             ],
                             [
-                                'label' => Html::icon('bitcoin').' ซื้ออะไหล่/ส่งร้าน',
+                                'label' => Html::icon('bitcoin').' ข้อมูลซื้ออะไหล่/ส่งร้าน',
                                 'url' => ['staff/shopproc'],
                                 'count' => '\backend\modules\ir\models\IRSpareSearch',
                             ],
@@ -364,7 +364,7 @@ $this->registerLinkTag([
                                 'count' => '\backend\modules\ir\models\IRStaffSearch',
                             ],
                             [
-                                'label' => Html::icon('record').' ความเห็นหลังร้านเช็ค',
+                                'label' => Html::icon('record').' แสดงความเห็นหลังร้านเช็ค',
                                 'url' => ['staff/shoptechnic'],
                                 'count' => '\backend\modules\ir\models\IRSpareSearch',
                             ],

@@ -71,6 +71,11 @@ $this->registerCss('
             'filter' =>false,
         ],
         [
+            'attribute' => 'ir_tchnID',
+            'value' => 'irTchn.fullname',
+            'filter' =>false,
+        ],
+        [
             'class' => 'yii\grid\ActionColumn',
             'template'=>'{invtapprv} {techapprv}',
             'buttons' => [
@@ -78,14 +83,14 @@ $this->registerCss('
                     if($model->status == 1) {
                         return '<span class="label label-info">พัสดุรับทราบแล้ว</span>';
                     }elseif ($model->status == 2){
-                        return '<span class="label label-primary">ช่างรับทราบแล้ว</span>';
+                        return '';
                     }else{
                         return Html::a(' ' . Html::icon('circle-arrow-right') . ' พัสดุ', $url, ['class' => 'btn btn-default', 'title' => 'พัสดุ']);
                     }
                 },
                 'techapprv' => function ($url, $model, $key) {
                     if(!empty($model->invtRepairDetails)) {
-                        return Html::a(' ' . Html::icon('wrench') . ' เทคนิค', $url, ['class'=>'btn btn-default', 'title' => 'เจ้าหน้าที่เทคนิค']);
+                        return Html::a(' ' . Html::icon('wrench') . ' ช่างเทคนิค', $url, ['class'=>'btn btn-default', 'title' => 'เจ้าหน้าที่เทคนิค']);
                     }
                 },
             ],
