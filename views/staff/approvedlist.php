@@ -3,8 +3,7 @@
 use yii\bootstrap\Html;
 //use kartik\widgets\DatePicker;
 
-use kartik\grid\GridView;
-
+use kartik\dynagrid\DynaGrid;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\inventory\models\InvtCheckcommitSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -15,109 +14,91 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-		//'id' => 'kv-grid-demo',
-		'dataProvider'=> $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            //['class' => 'yii\grid\SerialColumn'],
+<?= DynaGrid::widget([
+    'columns' => [
+		//['class' => 'yii\grid\SerialColumn'],
 
-			[
-				'attribute' => 'id',
-				'headerOptions' => [
-					'width' => '60px',
-				],
+		[
+			'attribute' => 'id',
+			'headerOptions' => [
+				'width' => '60px',
 			],
-			[
-				'attribute' => 'userName',
-				'value' => 'user.fullname',
-				'label' => $searchModel->attributeLabels()['user_id'],
-			],
-            'position',
-            'year',
-            //'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
-				[
-					'class' => 'yii\grid\ActionColumn',
-					'template' => '{unchange}',
-					'buttons' => [
-						'unchange' => function ($url, $model, $key) {
-							//return Html::a('<i class="glyphicon glyphicon-ok-circle"></i>',$url);
-							return Html::a(' '.Html::icon('resize-small').' ', $url);
-						},
-					],
-					'headerOptions' => [
-						'width' => '80px',
-					],
-					'contentOptions' => [
-						'class'=>'text-center',
-					],
-					'header' => 'ไม่เปลี่ยน',
-				],
+		],
+		[
+			'attribute' => 'userName',
+			'value' => 'user.fullname',
+			'label' => $searchModel->attributeLabels()['user_id'],
+		],
+		'position',
+		'year',
+		//'created_at',
+		// 'created_by',
+		// 'updated_at',
+		// 'updated_by',
 			[
 				'class' => 'yii\grid\ActionColumn',
-				'template' => '{change}',
+				'template' => '{unchange}',
 				'buttons' => [
-					'change' => function ($url, $model, $key) {
-						return Html::a(' '.Html::icon('transfer').' ', $url);
-					}
+					'unchange' => function ($url, $model, $key) {
+						//return Html::a('<i class="glyphicon glyphicon-ok-circle"></i>',$url);
+						return Html::a(' '.Html::icon('resize-small').' ', $url);
+					},
 				],
 				'headerOptions' => [
-					'width' => '60px',
+					'width' => '80px',
 				],
 				'contentOptions' => [
 					'class'=>'text-center',
 				],
-				'header' => 'เปลี่ยน',
+				'header' => 'ไม่เปลี่ยน',
 			],
-        ],
+		[
+			'class' => 'yii\grid\ActionColumn',
+			'template' => '{change}',
+			'buttons' => [
+				'change' => function ($url, $model, $key) {
+					return Html::a(' '.Html::icon('transfer').' ', $url);
+				}
+			],
+			'headerOptions' => [
+				'width' => '60px',
+			],
+			'contentOptions' => [
+				'class'=>'text-center',
+			],
+			'header' => 'เปลี่ยน',
+			'order'=>DynaGrid::ORDER_FIX_RIGHT,
+		],
+	],	
+    'theme'=>'panel-info',
+    'showPersonalize'=>true,
+	'storage' => 'session',
+	'toggleButtonGrid' => [
+		'label' => '<span class="glyphicon glyphicon-wrench">ปรับแต่งตาราง</span>'
+	],
+    'gridOptions'=>[
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        // 'showPageSummary'=>true,
+        // 'floatHeader'=>true,
+		'pjax'=>true,
+		'hover'=>true,
 		'pager' => [
 			'firstPageLabel' => Yii::t('app', 'รายการแรกสุด'),
 			'lastPageLabel' => Yii::t('app', 'รายการท้ายสุด'),
 		],
-		'responsive'=>true,
-		'hover'=>true,
-		'pjax' => true,
-		'toolbar'=> false,
-		'panel'=>[
-			'type'=>GridView::TYPE_INFO,
-			'heading'=> Html::icon('ok-circle').' '.Html::encode($this->title),
+		'resizableColumns'=>true,
+        'responsiveWrap'=>false,
+        'panel'=>[
+            'heading'=> Html::icon('ok-circle').' '.Html::encode($this->title),
+            // 'before' =>  '<div style="padding-top: 7px;"><em>* The table header sticks to the top in this demo as you scroll</em></div>',
+            'after' => false
+        ],
+        'toolbar' =>  [            
+            ['content'=>'{dynagrid}'],
 		],
-    ]); ?>
-<?php 	 /* adzpire grid tips
-		[
-				'attribute' => 'id',
-				'headerOptions' => [
-					'width' => '50px',
-				],
-			],
-		[
-		'attribute' => 'we_date',
-		'value' => 'we_date',
-			'filter' => DatePicker::widget([
-					'model'=>$searchModel,
-					'attribute'=>'date',
-					'language' => 'th',
-					'options' => ['placeholder' => Yii::t('app', 'enterdate')],
-					'type' => DatePicker::TYPE_COMPONENT_APPEND,
-					'pickerButton' =>false,
-					//'size' => 'sm',
-					//'removeButton' =>false,
-					'pluginOptions' => [
-						'autoclose' => true,
-						'format' => 'yyyy-mm-dd'
-					]
-				]),
-			//'format' => 'html',			
-			'format' => ['date']
-
-		],	
-		[
-			'attribute' => 'we_creator',
-			'value' => 'weCr.userPro.nameconcatened'
-		],
-	 */
- ?> 	
+		
+    ],
+    'options'=>['id'=>'dynagrid-irstaffapprlist'] // a unique identifier is important
+]); ?>	
 </div>

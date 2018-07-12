@@ -14,7 +14,9 @@ use backend\modules\ir\models\IRStaffSearch;
 use backend\modules\ir\models\IRInvtstaffSearch;
 use backend\modules\ir\models\StaffWaitExecSearch;
 use backend\modules\ir\models\StaffCompleteSearch;
-
+use backend\modules\ir\models\ExecprocessSearch;
+use frontend\modules\linenotify\models\Linetoken;
+use frontend\modules\linenotify\models\Linetokenprogram;
 use backend\modules\person\models\Person;
 
 use backend\modules\inventory\models\InvtMain;
@@ -33,6 +35,7 @@ use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 use kartik\mpdf\Pdf;
 
@@ -110,11 +113,13 @@ class StaffController extends Controller
     }
 
     public $moduletitle;
+    public $lineprog;
 
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
             $this->moduletitle = Yii::t('app', Yii::$app->controller->module->params['title']);
+            $this->lineprog = Linetokenprogram::findOne(2);
 
             return true;
         } else {
@@ -618,6 +623,9 @@ class StaffController extends Controller
                 $model->ir_tchnID = Yii::$app->user->id;
                 $model->ir_tchndate = date('Y-m-d');
                 $model->save(false);
+
+                AdzpireComponent::linenotify($this->lineprog->id, "\n** ".$this->lineprog->token." **\n -- ช่างรับทราบและกำลังซ่อม -- **\n อ่านเพิ่มเติม: http://www.comm-sci.pn.psu.ac.th/".Url::to(['view', 'id'=> $model->ir_id]), $model->ir_stID);
+
                 AdzpireComponent::succalert('edtflsh', 'รับทราบรายการเรียบร้อย');
                 return $this->redirect(['techapprv', 'id' => $model->ir_id]);
             }
@@ -854,6 +862,20 @@ class StaffController extends Controller
         ]);
     }
 
+    public function actionExecstaffproc()
+    {
+
+        Yii::$app->view->title = 'หลังอนุมัติ - '. $this->moduletitle;
+
+        $searchModel = new IRAfterExecSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('execproc', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionShoptchn($id)
     {
         $model = $this->findModel($id);
@@ -953,6 +975,20 @@ class StaffController extends Controller
         ]);
     }
 
+    public function actionInprocess()
+    {
+
+        Yii::$app->view->title = 'รายการที่กำลังดำเนินการ - '. $this->moduletitle;
+
+        $searchModel = new ExecprocessSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('inprocess', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionTechprocapprv($id)
     {
         $model = $this->findModel($id);
@@ -968,7 +1004,7 @@ class StaffController extends Controller
                 $model->ir_staffreturn = date('Y-m-d H:i:s');
                 $model->save(false);
                 AdzpireComponent::succalert('edtflsh', 'แจ้งรับคืนแล้ว');
-                return $this->redirect(['execproc']);
+                return $this->redirect(['execstaffproc']);
             }
             print_r($model->getErrors());
             exit;
@@ -1018,8 +1054,15 @@ class StaffController extends Controller
         $mdlmain = new InvtMain();
 
         Yii::$app->view->title = 'ดำเนินการอนุมัติ - '. $this->moduletitle;
-
+        
         if ($model->load(Yii::$app->request->post())) {
+            if(isset(Yii::$app->request->post()['sendback']))
+            {
+                $model->status = 4;
+                $model->save(false);
+                AdzpireComponent::succalert('edtflsh', 'ดำเนินการเรียบร้อย');
+                return $this->redirect(['exec']);
+            }
             $model->ir_execUID = Yii::$app->user->id;
             $model->ir_execdate = date('Y-m-d');
             $model->status = 6;
@@ -1111,7 +1154,28 @@ class StaffController extends Controller
         ]);
 
     }
+    public function actionUndoproc($id)
+    {
+        $model = $this->findModel($id);
 
+        if (Yii::$app->request->post()) {
+                $model->status = 3;
+                $model->ir_execchoice = NULL;
+                $model->ir_execcomment = NULL;
+                $model->ir_execUID = NULL;
+                $model->ir_execdate = NULL;
+                if($model->save(false)){
+                    AdzpireComponent::succalert('edtflsh', 'ดำเนินการเรียบร้อย');
+                    return $this->redirect(['staff/toexec', 'id' => $model->ir_id]);
+                }else{
+                    print_r($model->getErrors());
+                    exit;
+                }   
+        }else{
+            return $this->redirect(['staff']);
+        }
+
+    }
     public function actionChangestat($id)
     {
 

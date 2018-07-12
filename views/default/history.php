@@ -3,8 +3,7 @@
 use yii\bootstrap\Html;
 //use kartik\widgets\DatePicker;
 
-use kartik\grid\GridView;
-
+use kartik\dynagrid\DynaGrid;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\inventory\models\InvtCheckcommitSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,10 +15,7 @@ $this->registerCss('
 }
 ');
 ?>
-<?= GridView::widget([
-    //'id' => 'kv-grid-demo',
-    'dataProvider'=> $dataProvider,
-    'filterModel' => $searchModel,
+<?= DynaGrid::widget([
     'columns' => [
         //['class' => 'yii\grid\SerialColumn'],
 
@@ -30,15 +26,16 @@ $this->registerCss('
                 'width' => '50px',
             ],
         ],
-//        [
-//            'attribute' => 'status',
-//            'headerOptions' => [
-//                'width' => '50px',
-//            ],
-//            'format' => 'html',
-//            'filter' => $searchModel::getItemStatus(),
-//            'value' => 'statusLabel'
-//        ],
+       [
+           'attribute' => 'status',
+           'headerOptions' => [
+               'width' => '50px',
+           ],
+           'format' => 'html',
+           'filter' => $searchModel::getItemStatus(),
+           'value' => 'statusLabel',
+           'visible'=>false,
+       ],
 //            'status',
 //            'ir_stID',
 //            'ir_tchnID',
@@ -89,25 +86,43 @@ $this->registerCss('
                 'class'=>'text-center',
             ],
             'header' => 'รายละเอียด',
+            'order'=>DynaGrid::ORDER_FIX_RIGHT,
         ],
-    ],
-    'pager' => [
-        'firstPageLabel' => 'รายการแรกสุด',
-        'lastPageLabel' => 'รายการท้ายสุด',
-    ],
-    'responsive'=>true,
-    'hover'=>true,
-    'toolbar'=> [
-        ['content'=>
-        // Html::a(Html::icon('plus').'สร้างแบบฟอร์มใหม่', ['create'], ['class'=>'btn btn-success', 'title'=>Yii::t('app', 'เพิ่ม')]).' '.
-        // Html::a(Html::icon('info-sign').'แสดงตัวอย่่าง', ['pdf?id=example'], ['class'=>'btn btn-danger', 'title'=>Yii::t('app', 'แสดงตัวอย่่าง'), 'target'=>'_blank']).' '.
-            Html::a(Html::icon('repeat'), ['grid-demo'], ['data-pjax'=>0, 'class'=>'btn btn-default', 'title'=>Yii::t('app', 'Reset Grid')])
+    ],	
+    'theme'=>'panel-info',
+    'showPersonalize'=>true,
+	'storage' => 'session',
+	'toggleButtonGrid' => [
+		'label' => '<span class="glyphicon glyphicon-wrench">ปรับแต่งตาราง</span>'
+	],
+    'gridOptions'=>[
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        // 'showPageSummary'=>true,
+        // 'floatHeader'=>true,
+		'pjax'=>true,
+		'hover'=>true,
+		'pager' => [
+			'firstPageLabel' => Yii::t('app', 'รายการแรกสุด'),
+			'lastPageLabel' => Yii::t('app', 'รายการท้ายสุด'),
+		],
+		'resizableColumns'=>true,
+        'responsiveWrap'=>false,
+        'panel'=>[
+            'heading'=>'<h3 class="panel-title">'.Html::icon($searchModel::fn()['icon']).' '.Html::encode($this->title).'</h3>',
+            // 'before' =>  '<div style="padding-top: 7px;"><em>* The table header sticks to the top in this demo as you scroll</em></div>',
+            'after' => false
         ],
-        '{toggleData}',
+        'toolbar' =>  [
+            ['content'=>
+				Html::a('<i class="glyphicon glyphicon-repeat"></i>', ['dynagrid-demo'], ['data-pjax'=>0, 'class' => 'btn btn-default', 'title'=>'Reset Grid'])
+            ],
+            ['content'=>'{dynagrid}'],
+            '{toggleData}',
+		],
+		
     ],
-    'panel'=>[
-        'type'=>GridView::TYPE_INFO,
-        'heading'=> Html::icon('hourglass').' '.Html::encode($this->title),
-    ],
+    'options'=>['id'=>'dynagrid-pp'] // a unique identifier is important
 ]); ?>
+
 </div>

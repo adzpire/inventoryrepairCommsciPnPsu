@@ -10,7 +10,8 @@ use backend\modules\ir\models\InvtRepairDetailSearch;
 use backend\modules\ir\models\IRDefaultSearch;
 use backend\modules\ir\models\IRGetbackSearch;
 use backend\modules\ir\models\IRDftAllSearch;
-
+use frontend\modules\linenotify\models\Linetoken;
+use frontend\modules\linenotify\models\Linetokenprogram;
 use backend\modules\person\models\Person;
 
 use backend\modules\inventory\models\InvtMain;
@@ -71,12 +72,13 @@ class DefaultController extends Controller
     }
 
     public $moduletitle;
+    public $lineprog;
 
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
             $this->moduletitle = Yii::t('app', Yii::$app->controller->module->params['title']);
-
+            $this->lineprog = Linetokenprogram::findOne(2);
             return true;
         } else {
             return false;
@@ -129,10 +131,13 @@ class DefaultController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }*/
-
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
+
+                AdzpireComponent::linenotify($this->lineprog->id, "\n** ".$this->lineprog->token."  **\n [[--- ท่านแจ้งซ่อมเรียบร้อย ---]]\n อ่านเพิ่มเติม: http://www.comm-sci.pn.psu.ac.th/".Url::to(['view', 'id'=> $model->ir_id]), $model->ir_stID);
+
                 AdzpireComponent::succalert('addflsh', 'เพิ่มรายการใหม่เรียบร้อย');
+                
                 return $this->redirect(['update', 'id' => $model->ir_id]);
             } else {
                 AdzpireComponent::dangalert('addflsh', 'เพิ่มรายการไม่ได้');
@@ -145,6 +150,47 @@ class DefaultController extends Controller
             return $this->render('create', [
                 'model' => $model,
                 'staff' => $qstaff,
+            ]);
+        }
+    }
+
+    public function actionQuickcreate($id)
+    {
+        Yii::$app->view->title = Yii::t('app', 'แจ้งซ่อม');
+        
+        $model = new InvtRepair();
+        $detailmdl = new InvtRepairDetail();
+        $invt = InvtMain::findOne($id);
+        $detailmdl->ird_ivntID = $id;
+        $detailmdl->ird_ivntLoc = $invt->invt_locationID;
+        $model->ir_stID = Yii::$app->user->id;
+        $model->ir_date = date('Y-m-d');
+        if ($detailmdl->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                // $mdllt = Linetoken::getToken($this->lineprog);
+                // if(!empty($mdllt)){
+                //     AdzpireComponent::linenotify($this->lineprog, "\n** ------ ท่านแจ้งซ่อมเรียบร้อย ------ **\n อ่านเพิ่มเติม: http://www.comm-sci.pn.psu.ac.th/".Url::to(['view', 'id'=> $model->ir_id]), $mdllt->Line_Token);
+                // }
+                $detailmdl->ird_irID = $model->ir_id;
+                if ($detailmdl->save()) {
+                    AdzpireComponent::succalert('addflsh', 'เพิ่มรายการใหม่เรียบร้อย');
+                return $this->redirect(['index']);
+                }else{
+                    AdzpireComponent::dangalert('addflsh', 'เพิ่มรายการไม่ได้');
+                    print_r($detailmdl->getErrors());
+                    exit;
+                }                
+            } else {
+                AdzpireComponent::dangalert('addflsh', 'เพิ่มรายการไม่ได้');
+            }
+            print_r($model->getErrors());
+            exit;
+        } else {
+            
+            return $this->render('quickcreate', [
+                'model' => $model,
+                'invt' => $invt,
+                'detailmdl' => $detailmdl,
             ]);
         }
     }

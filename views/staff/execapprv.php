@@ -75,16 +75,11 @@ $this->registerCss('
                         },
                         'format' => 'html',
                     ],
-//                    [
-//                        'attribute' => 'ird_ivntID',
-//                        'label' => $mdlmain->getAttributeLabel('invt_code'),
-//                        'value' => 'irdIvnt.invt_code'
-//                    ],
-//                    [
-//                        'attribute' => 'ird_ivntID',
-//                        'label' => $mdlmain->getAttributeLabel('invt_locationID'),
-//                        'value' => 'irdIvnt.invtLocation.loc_name'
-//                    ],
+                    [
+                        'attribute' => 'ird_ivntLoc',
+                        // 'label' => $data->getAttributeLabel('ird_ivntLoc'),
+                        'value' => 'irdLoc.loc_name'
+                    ],          
                     'ird_symptom',
 
                     //'ird_tchnchoice',
@@ -121,6 +116,7 @@ $this->registerCss('
             <?= $form->field($model, 'ir_execcomment')->textInput(['maxlength' => true]) ?>
             <?= Html::submitButton(Html::icon('play') . ' ทราบ/อนุมัติ', ['class' => 'btn btn-lg btn-info', 'name'=>'apprv']) ?>
             <?= Html::submitButton(Html::icon('stop') . ' ไม่อนุมัติ', ['class' => 'btn btn-lg btn-danger', 'name'=>'notapprv', 'data' => [ 'confirm' => 'ท่านต้องการไม่อนุมัตืใช่หรือไม่? กรุณาลงความเห็นการไม่อนุมัติด้วย', ],]) ?>
+            <?= Html::submitButton(Html::icon('backward') . ' คืนพัสดุแก้ไข', ['class' => 'btn btn-lg btn-warning', 'name'=>'sendback',]) ?>
         </div>
     </div>
 

@@ -8,8 +8,7 @@ use yii\helpers\Url;
 
 use kartik\widgets\DatePicker;
 use kartik\widgets\Select2;
-use kartik\grid\GridView;
-
+use kartik\dynagrid\DynaGrid;
 use yii\widgets\Pjax;
 
 use yii\web\View;
@@ -127,75 +126,95 @@ $this->registerCss('
             echo ' ' . Html::a(Html::icon('ban-circle') . ' ' . Yii::t('app', 'ยกเลิก'), Yii::$app->request->referrer, ['class' => 'btn btn-warning']);
             ?>
         <?php Pjax::begin(['id' => 'detailpjax']); ?>
-        <?= GridView::widget([
-            //'id' => 'kv-grid-demo',
-            'dataProvider'=> $dataProvider,
-            'columns' => [
-                ['class' => 'yii\grid\SerialColumn'],
+<?= DynaGrid::widget([
+    'columns' => [
+        ['class' => 'yii\grid\SerialColumn'],
 
-                //'ird_id',
-                //'ird_irID',
+        //'ird_id',
+        //'ird_irID',
 //            'ird_ivntID',
-                [
-                    'attribute' => 'ird_ivntID',
-                    'label' => $mdlmain->getAttributeLabel('invt_name'),
-                    //$model->irdIvnt->attributeLabels()['invt_name'],
-                    'value' => 'irdIvnt.shortdetail'
-                ],
-                [
-                    'attribute' => 'ird_ivntID',
-                    'label' => $mdlmain->getAttributeLabel('invt_code'),
+        [
+            'attribute' => 'ird_ivntID',
+            'label' => $mdlmain->getAttributeLabel('invt_name'),
+            //$model->irdIvnt->attributeLabels()['invt_name'],
+            'value' => 'irdIvnt.shortdetail'
+        ],
+        [
+            'attribute' => 'ird_ivntID',
+            'label' => $mdlmain->getAttributeLabel('invt_code'),
 //                'label' => function ($data) {
 //                    return $data->irdIvnt->attributeLabels()['invt_code'];
 //                },
 //                $model->irdIvnt->attributeLabels()['invt_code'],
-                    'value' => 'irdIvnt.invt_code'
-                ],
-                [
-                    'attribute' => 'ird_ivntID',
-                    'label' => $mdlmain->getAttributeLabel('invt_locationID'),
-                    'value' => 'irdIvnt.invtLocation.loc_name'
-                ],
-                'ird_symptom',
+            'value' => 'irdIvnt.invt_code'
+        ],
+        [
+            'attribute' => 'ird_ivntID',
+            'label' => $mdlmain->getAttributeLabel('invt_locationID'),
+            'value' => 'irdIvnt.invtLocation.loc_name'
+        ],
+        'ird_symptom',
 
-                //'ird_tchnchoice',
-                // 'ird_tchncomment',
-                [
-                    'class' => 'kartik\grid\ActionColumn',
-                    'template' => '{updatedetail} {deletedetail}',
-                    'buttons' => [
-                        'updatedetail' => function ($url, $model, $key) {
-                            return Html::a(Html::icon('pencil'), $url, [
-                                'class' => '_qeditdetail btn btn-default',
-                                'data-pjax' => 0,
-                            ]);
-                        },
+        //'ird_tchnchoice',
+        // 'ird_tchncomment',
+        [
+            'class' => 'kartik\grid\ActionColumn',
+            'template' => '{updatedetail} {deletedetail}',
+            'buttons' => [
+                'updatedetail' => function ($url, $model, $key) {
+                    return Html::a(Html::icon('pencil'), $url, [
+                        'class' => '_qeditdetail btn btn-default',
+                        'data-pjax' => 0,
+                    ]);
+                },
 //                    'deletedetail' => function ($url, $model, $key) {
 //                        return Html::a(Html::icon('trash'), $url, [
 //                            'class' => '_qdeletedetail btn btn-danger',
 //                            'data-pjax' => 0,
 //                        ]);
 //                    },
-                    ],
-                    'headerOptions' => [
-                        'width' => '50px',
-                    ],
-                ],
             ],
-            'pager' => [
-                'firstPageLabel' => 'รายการแรกสุด',
-                'lastPageLabel' => 'รายการท้ายสุด',
+            'headerOptions' => [
+                'width' => '50px',
             ],
-            'responsive'=>true,
-            'hover'=>true,
-            'toolbar' => false,
-            'panel' => [
-                'type' => GridView::TYPE_INFO,
-                'heading' => Html::icon('th-list') . ' รายการรายละเอียด ',
-                'before' => Html::a(Html::icon('list') . ' ' . Yii::t('app', 'เพิ่มรายการ'), ['qadddetail', 'id' => $model->ir_id], ['class' => ($dataProvider->totalCount >0) ? 'btn btn-success _qdetail' : 'btn btn-success _qdetail blink_me', 'data-pjax' => 0]),
-                'beforeOptions' => ['class'=>'text-center kv-panel-before'],
+            'order'=>DynaGrid::ORDER_FIX_RIGHT,
+        ],
+    ],	
+    'theme'=>'panel-info',
+    'showPersonalize'=>true,
+	'storage' => 'session',
+	'toggleButtonGrid' => [
+		'label' => '<span class="glyphicon glyphicon-wrench">ปรับแต่งตาราง</span>'
+	],
+    'gridOptions'=>[
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        // 'showPageSummary'=>true,
+        // 'floatHeader'=>true,
+		// 'pjax'=>true,
+		'hover'=>true,
+		'pager' => [
+			'firstPageLabel' => Yii::t('app', 'รายการแรกสุด'),
+			'lastPageLabel' => Yii::t('app', 'รายการท้ายสุด'),
+		],
+		'resizableColumns'=>true,
+        'responsiveWrap'=>false,
+        'panel'=>[
+            'heading' => Html::icon('th-list') . ' รายการรายละเอียด ',
+            'before' => Html::a(Html::icon('list') . ' ' . Yii::t('app', 'เพิ่มรายการ'), ['qadddetail', 'id' => $model->ir_id], ['class' => ($dataProvider->totalCount >0) ? 'btn btn-success _qdetail' : 'btn btn-success _qdetail blink_me', 'data-pjax' => 0]),
+            'beforeOptions' => ['class'=>'text-center kv-panel-before'],
+        ],
+        'toolbar' =>  [
+            ['content'=>
+				Html::a('<i class="glyphicon glyphicon-repeat"></i>', ['dynagrid-demo'], ['data-pjax'=>0, 'class' => 'btn btn-default', 'title'=>'Reset Grid'])
             ],
-        ]); ?>
+            ['content'=>'{dynagrid}'],
+            '{toggleData}',
+		],
+		
+    ],
+    'options'=>['id'=>'dynagrid-irstaffall'] // a unique identifier is important
+]); ?>
         <?php 	 /* adzpire grid tips
 		[
 				'attribute' => 'id',

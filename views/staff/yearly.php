@@ -3,8 +3,7 @@
 use yii\bootstrap\Html;
 //use kartik\widgets\DatePicker;
 
-use kartik\grid\GridView;
-
+use kartik\dynagrid\DynaGrid;
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\inventory\models\InvtCheckcommitSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -15,100 +14,79 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-		//'id' => 'kv-grid-demo',
-		'dataProvider'=> $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            //['class' => 'yii\grid\SerialColumn'],
+<?= DynaGrid::widget([
+    'columns' => [
+		//['class' => 'yii\grid\SerialColumn'],
 
+		[
+			'attribute' => 'id',
+			'headerOptions' => [
+				'width' => '60px',
+			],
+		],
+		[
+			'attribute' => 'userName',
+			'value' => 'user.fullname',
+			'label' => $searchModel->attributeLabels()['user_id'],
+		],
+		'position',
+		'year',
+		//'created_at',
+		// 'created_by',
+		// 'updated_at',
+		// 'updated_by',
 			[
-				'attribute' => 'id',
+				'class' => 'yii\grid\ActionColumn',
+				'template' => '{selinvt}',
+				'buttons' => [
+					'selinvt' => function ($url, $model, $key) {
+						//return Html::a('<i class="glyphicon glyphicon-ok-circle"></i>',$url);
+						return Html::a(Html::icon('check'), $url);
+					}
+				],
 				'headerOptions' => [
 					'width' => '60px',
 				],
-			],
-			[
-				'attribute' => 'userName',
-				'value' => 'user.fullname',
-				'label' => $searchModel->attributeLabels()['user_id'],
-			],
-            'position',
-            'year',
-            //'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
-				[
-					'class' => 'yii\grid\ActionColumn',
-					'template' => '{selinvt}',
-					'buttons' => [
-						'selinvt' => function ($url, $model, $key) {
-							//return Html::a('<i class="glyphicon glyphicon-ok-circle"></i>',$url);
-							return Html::a(Html::icon('check'), $url);
-						}
-					],
-					'headerOptions' => [
-						'width' => '60px',
-					],
-					'contentOptions' => [
-						'class'=>'text-center',
-					],
-					'header' => 'เลือก',
+				'contentOptions' => [
+					'class'=>'text-center',
 				],
-        ],
-		'pager' => [
-			'firstPageLabel' => Yii::t('app', '1stPagi'),
-			'lastPageLabel' => Yii::t('app', 'lastPagi'),
-		],
-		'responsive'=>true,
+				'header' => 'เลือก',
+			],
+	],	
+    'theme'=>'panel-info',
+    'showPersonalize'=>true,
+	'storage' => 'session',
+	'toggleButtonGrid' => [
+		'label' => '<span class="glyphicon glyphicon-wrench">ปรับแต่งตาราง</span>'
+	],
+    'gridOptions'=>[
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        // 'showPageSummary'=>true,
+        // 'floatHeader'=>true,
+		'pjax'=>true,
 		'hover'=>true,
-		'pjax' => true,
-		'toolbar'=> [
-			['content'=>
-				//Html::a(Html::icon('plus'), ['create'], ['class'=>'btn btn-success', 'title'=>Yii::t('app', 'Add Book')]).' '.
-				Html::a(Html::icon('repeat'), ['grid-demo'], ['data-pjax'=>0, 'class'=>'btn btn-default', 'title'=>Yii::t('app', 'Reset Grid')])
-			],
-			//'{export}',
-			'{toggleData}',
+		'pager' => [
+			'firstPageLabel' => Yii::t('app', 'รายการแรกสุด'),
+			'lastPageLabel' => Yii::t('app', 'รายการท้ายสุด'),
 		],
-		'panel'=>[
-			'type'=>GridView::TYPE_INFO,
-			'heading'=> Html::icon('bookmark').' '.Html::encode($this->title),
+		'resizableColumns'=>true,
+        'responsiveWrap'=>false,
+        'panel'=>[
+            'heading'=> Html::icon('bookmark').' '.Html::encode($this->title),
+            // 'before' =>  '<div style="padding-top: 7px;"><em>* The table header sticks to the top in this demo as you scroll</em></div>',
+            'after' => false
+        ],
+        'toolbar' =>  [
+            ['content'=>
+				Html::a('<i class="glyphicon glyphicon-repeat"></i>', ['dynagrid-demo'], ['data-pjax'=>0, 'class' => 'btn btn-default', 'title'=>'Reset Grid'])
+            ],
+            ['content'=>'{dynagrid}'],
+            '{toggleData}',
 		],
-    ]); ?>
-<?php 	 /* adzpire grid tips
-		[
-				'attribute' => 'id',
-				'headerOptions' => [
-					'width' => '50px',
-				],
-			],
-		[
-		'attribute' => 'we_date',
-		'value' => 'we_date',
-			'filter' => DatePicker::widget([
-					'model'=>$searchModel,
-					'attribute'=>'date',
-					'language' => 'th',
-					'options' => ['placeholder' => Yii::t('app', 'enterdate')],
-					'type' => DatePicker::TYPE_COMPONENT_APPEND,
-					'pickerButton' =>false,
-					//'size' => 'sm',
-					//'removeButton' =>false,
-					'pluginOptions' => [
-						'autoclose' => true,
-						'format' => 'yyyy-mm-dd'
-					]
-				]),
-			//'format' => 'html',			
-			'format' => ['date']
-
-		],	
-		[
-			'attribute' => 'we_creator',
-			'value' => 'weCr.userPro.nameconcatened'
-		],
-	 */
- ?> 	
+		
+    ],
+    'options'=>['id'=>'dynagrid-irstaffyearly'] // a unique identifier is important
+]); ?>
+    
 </div>

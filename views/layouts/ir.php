@@ -157,13 +157,10 @@ $this->registerJs($js);
         .nav-main-backend{
 		    display : none; 
 		}
-		.mywrap{
-		    margin-top: -50px;
-        }
      ");
     ?>
 </head>
-<body>
+<body style="margin-top: 0px;">
 <?php $this->beginBody() ?>
 <?php $modul = \Yii::$app->controller->module; ?>
 <?php
@@ -195,7 +192,7 @@ $this->registerLinkTag([
             'label' => Html::Icon('fullscreen') . ' ' . Yii::t('app', 'ระบบที่เกี่ยวข้อง'),
             'url' => ['#'],
             'items' => [
-                ['label' => Html::Icon('folder-open') . ' ' . Yii::t('app', 'ระบบเอกสารและแบบฟอร์มออนไลน์'), 'url' => ['dochub/']],
+                ['label' => Html::Icon('folder-open') . ' ' . Yii::t('app', 'ระบบเอกสารและแบบฟอร์มออนไลน์'), 'url' => ['/dochub/']],
                 ['label' => Html::Icon('scissors') . ' ' . Yii::t('app', 'ระบบข้อมูลพัสดุ/ครุภัณฑ์'), 'url' => ['/inventory/']],
             ]
         ],
@@ -273,7 +270,7 @@ $this->registerLinkTag([
         <?php
             //check action for extend col
             $checkaction = Yii::$app->controller->action->id;
-            $extendedpage = ['checking', 'unchange', 'change'];
+            $extendedpage = ['quickcreate', 'unchange', 'change'];
         ?>
         <div class='col-md-3' style='<?php echo ArrayHelper::isIn($checkaction, $extendedpage) ? 'display: none;' : false ?>' >
             <!-- -->
@@ -375,7 +372,7 @@ $this->registerLinkTag([
                             ],
                             [
                                 'label' => Html::icon('comment').' หลังได้อะไหล่/ร้านซ่อมแล้ว',
-                                'url' => ['staff/execproc'],
+                                'url' => ['staff/execstaffproc'],
                                 'count' => '\backend\modules\ir\models\IRAfterExecSearch',
                             ],
                             [
@@ -405,13 +402,25 @@ $this->registerLinkTag([
                             'encodeLabels' => false,
                             'items' => [
                                 [
+                                    'label' => Html::icon('time').' กำลังดำเนินการ',
+                                    'url' => ['staff/inprocess'],
+                                ],
+                                [
                                     'label' => Html::icon('check').' ยังไม่ทราบ/อนุมัติ',
                                     'url' => ['staff/exec'],
                                     'count' => '\backend\modules\ir\models\IRExecSearch',
                                 ],
                                 [
-                                    'label' => Html::icon('step-backward').' ตีกลับพัสดุแก้ข้อมูล',
+                                    'label' => Html::icon('step-backward').' ส่งคืนพัสดุแก้ไข',
                                     'url' => ['staff/undoapprvlist'],
+                                ],
+                                [
+                                    'label' => Html::icon('ban-circle').' อุปกรณ์ที่ชำรุด',
+                                    'url' => ['/inventory/invtmain/index?InvtMainSearch[sname]=3'],
+                                ],
+                                [
+                                    'label' => Html::icon('folder-open').' รายการทั้งหมด',
+                                    'url' => ['staff/all'],
                                 ],
                             ],
                             'options' => ['class' => 'nav-stacked'], // set this to nav-tab to get tab-styled navigation

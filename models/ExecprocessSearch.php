@@ -10,7 +10,7 @@ use backend\modules\ir\models\InvtRepair;
 /**
  * InvtRepairSearch represents the model behind the search form about `backend\modules\ir\models\InvtRepair`.
  */
-class StaffCompleteSearch extends InvtRepair
+class ExecprocessSearch extends InvtRepair
 {
     /**
      * @inheritdoc
@@ -75,7 +75,8 @@ class StaffCompleteSearch extends InvtRepair
         ]);
 
         $this->load($params);
-        $query->where(['status'=> 8]);
+//        $query->where(['status'=> 8]);
+        $query->where(['<', 'status', 5]);
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');

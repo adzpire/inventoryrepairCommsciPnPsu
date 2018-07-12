@@ -2,8 +2,7 @@
 
 use yii\bootstrap\Html;
 //use kartik\widgets\DatePicker;
-
-use kartik\grid\GridView;
+use kartik\dynagrid\DynaGrid;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\inventory\models\InvtCheckcommitSearch */
@@ -16,10 +15,7 @@ $this->registerCss('
 }
 ');
 ?>
-<?= GridView::widget([
-    //'id' => 'kv-grid-demo',
-    'dataProvider'=> $dataProvider,
-    'filterModel' => $searchModel,
+<?= DynaGrid::widget([
     'columns' => [
         //['class' => 'yii\grid\SerialColumn'],
 
@@ -76,6 +72,23 @@ $this->registerCss('
         ],
         [
             'class' => 'yii\grid\ActionColumn',
+            'template'=>'{undoproc}',
+            'buttons' => [
+                'undoproc' => function ($url, $model, $key) {
+                    return Html::a(' '.Html::icon('edit'), $url, ['class'=>'btn btn-primary', 'data' => [ 'confirm' => 'ท่านต้องการต้องการแก้ไขข้อมูลใหม่? ผู้มีอำนาจต้องอนุมัติใหม่เช่นกัน', 'method' => 'post',]]);
+                },
+            ],
+            'headerOptions' => [
+                'width' => '50px',
+            ],
+            'contentOptions' => [
+                'class'=>'text-center',
+            ],
+            'header' => 'แก้ไข',
+            'visible' => \Yii::$app->controller->action->id == 'execproc',
+        ],
+        [
+            'class' => 'yii\grid\ActionColumn',
             'template'=>'{execprocapprv}',
             'buttons' => [
                 'execprocapprv' => function ($url, $model, $key) {
@@ -89,6 +102,7 @@ $this->registerCss('
                 'class'=>'text-center',
             ],
             'header' => 'พัสดุส่งคืน',
+            'visible' => \Yii::$app->controller->action->id == 'execproc',
         ],
         [
             'class' => 'yii\grid\ActionColumn',
@@ -110,6 +124,7 @@ $this->registerCss('
                 'class'=>'text-center',
             ],
             'header' => 'ช่างส่งคืน',
+            'visible' => \Yii::$app->controller->action->id == 'execstaffproc',
         ],
         [
             'class' => 'yii\grid\ActionColumn',
@@ -126,24 +141,41 @@ $this->registerCss('
                 'class'=>'text-center',
             ],
         ],
-    ],
-    'pager' => [
-        'firstPageLabel' => 'รายการแรกสุด',
-        'lastPageLabel' => 'รายการท้ายสุด',
-    ],
-    'responsive'=>true,
-    'hover'=>true,
-    'toolbar'=> [
-        ['content'=>
-           // Html::a(Html::icon('plus').'สร้างแบบฟอร์มใหม่', ['create'], ['class'=>'btn btn-success', 'title'=>Yii::t('app', 'เพิ่ม')]).' '.
-           // Html::a(Html::icon('info-sign').'แสดงตัวอย่่าง', ['pdf?id=example'], ['class'=>'btn btn-danger', 'title'=>Yii::t('app', 'แสดงตัวอย่่าง'), 'target'=>'_blank']).' '.
-            Html::a(Html::icon('repeat'), ['grid-demo'], ['data-pjax'=>0, 'class'=>'btn btn-default', 'title'=>Yii::t('app', 'Reset Grid')])
+    ],	
+    'theme'=>'panel-info',
+    'showPersonalize'=>true,
+	'storage' => 'session',
+	'toggleButtonGrid' => [
+		'label' => '<span class="glyphicon glyphicon-wrench">ปรับแต่งตาราง</span>'
+	],
+    'gridOptions'=>[
+        'dataProvider'=>$dataProvider,
+        'filterModel'=>$searchModel,
+        // 'showPageSummary'=>true,
+        // 'floatHeader'=>true,
+		'pjax'=>true,
+		'hover'=>true,
+		'pager' => [
+			'firstPageLabel' => Yii::t('app', 'รายการแรกสุด'),
+			'lastPageLabel' => Yii::t('app', 'รายการท้ายสุด'),
+		],
+		'resizableColumns'=>true,
+        'responsiveWrap'=>false,
+        'panel'=>[
+            'heading'=> Html::icon('comment').' '.Html::encode($this->title),
+            // 'before' =>  '<div style="padding-top: 7px;"><em>* The table header sticks to the top in this demo as you scroll</em></div>',
+            'after' => false
         ],
-        '{toggleData}',
+        'toolbar' =>  [
+            ['content'=>
+				Html::a('<i class="glyphicon glyphicon-repeat"></i>', ['dynagrid-demo'], ['data-pjax'=>0, 'class' => 'btn btn-default', 'title'=>'Reset Grid'])
+            ],
+            ['content'=>'{dynagrid}'],
+            '{toggleData}',
+		],
+		
     ],
-    'panel'=>[
-        'type'=>GridView::TYPE_INFO,
-        'heading'=> Html::icon('comment').' '.Html::encode($this->title),
-    ],
+    'options'=>['id'=>'dynagrid-irstaffexecproc'] // a unique identifier is important
 ]); ?>
+
 </div>

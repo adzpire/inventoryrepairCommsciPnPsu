@@ -33,6 +33,7 @@ class Module extends \yii\base\Module
 		$this->params['ModuleVers'] = '1.1';
 		$this->params['title'] = 'ระบบแจ้งซ่อมพัสดุ/ครุภัณฑ์';
         $this->params['modulecookies'] = 'irck';
+        $this->params['lineprog'] = 'ระบบแจ้งซ่อมฯ';
         // custom initialization code goes here
     }
 }

@@ -52,6 +52,11 @@ $this->registerCss('
                     'label' => $mdlmain->getAttributeLabel('invt_code'),
                     'value' => 'irdIvnt.invt_code'
                 ],
+                [
+                    'attribute' => 'ird_ivntLoc',
+                    // 'label' => $data->getAttributeLabel('ird_ivntLoc'),
+                    'value' => 'irdLoc.loc_name'
+                ],
                 'ird_symptom',
 
                 [
